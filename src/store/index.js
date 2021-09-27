@@ -7,7 +7,8 @@ const store = createStore({
     }),
     modules: {
         session
-    }
+    },
+    strict: process.env.NODE_ENV !== 'production'
 })
 
 export default store
