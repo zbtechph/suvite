@@ -1,13 +1,8 @@
 <template>
-    <form class="w-full" method="POST" action ="/login" @submit.prevent="handleLogin">
+    <form class="w-full" method="POST" action ="/" @submit.prevent="handleLogin">
         <div class="text-2xl py-4">Authentication</div>
-        <div v-if="state.error" class="bg-red-500 text-red-100 rounded p-4 my-2">
-            {{ state.error }}
-        </div>
-        <div class="flex flex-col mb-3">
-            <label class="mb-1 text-gray-500 text-sm font-semibold">Email</label>
-            <input type="email" v-model="state.email" @keydown="state.error=null" class="p-2 border-2 rounded" required/>
-        </div>
+        <zb-alert v-if="state.error" :message="state.error.message"/>
+        <zb-form-input label="Email" v-model="state.email" type="email" required/>
         <div class="flex flex-col mb-3">
             <div class="flex flex-row justify-between mb-1 text-gray-500 text-sm font-semibold">
                 <label>Password</label>
@@ -16,7 +11,7 @@
             <input type="password" v-model="state.password" @keydown="state.error=null" class="p-2 border-2 rounded" required/>
         </div>
         <div class="mb-3">
-            <button class="w-full md:w-auto p-4 bg-green-500 text-green-100 rounded font-bold disabled:opacity-50" type="submit" :disabled="state.loader">SIGN IN</button>
+            <zb-button type="submit" label="Sign in" styles="bg-green-500 text-green-100" :disabled="state.loader"/>
         </div>
     </form>
 </template>
@@ -25,6 +20,9 @@
 import { reactive, computed } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter, useRoute } from 'vue-router'
+import ZbAlert from '../../components/base/Alert.vue'
+import ZbFormInput from '../../components/base/FormInput.vue'
+import ZbButton from '../../components/base/Button.vue'
 
 const store = useStore()
 const route = useRoute()
@@ -39,24 +37,12 @@ const state = reactive({
 
 const redirect = computed( () => route.query.redirect || '/')
 
-const handleLogin = () => {
+const handleLogin = async () => {
     state.loader = true, state.error = null
-    store.dispatch("session/login", { email: state.email, password: state.password }, { root: true })
-        .then(response => {
-            console.log({ response })
-            if(response.error){
-                state.error = response.error.message
-            } else {
-                router.push(redirect)
-            }
-        })
-        .catch(err => {
-            state.error = err
-        })
-        .finally(()=>{
-            state.loader = false
-            state.password = ""
-        })
+    const { error } = await store.dispatch("session/login", { email: state.email, password: state.password }, { root: true })
+    if(error) state.error = error
+    else router.push(redirect.value)
+    state.loader = false, state.password = ""
 }
 
 

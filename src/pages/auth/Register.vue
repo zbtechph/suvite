@@ -1,16 +1,11 @@
 <template>
-    <form method="POST" action ="/login" @submit.prevent="handleSignup">
-        <div>Register</div>
+    <form method="POST" action ="/" @submit.prevent="handleSignup">
+        <div class="text-2xl py-4">Sign up</div>
+        <zb-alert v-if="state.error" :message="state.error.message"/>
+        <zb-form-input label="Email" v-model="state.email" type="email" required/>
+        <zb-form-input label="Password" v-model="state.password" type="password" required/>
         <div>
-            <label>Email</label>
-            <input type="email" v-model="state.email" required/>
-        </div>
-        <div>
-            <label>Password</label>
-            <input type="password" v-model="state.password" required/>
-        </div>
-        <div>
-            <button type="submit" :disabled="state.loader">Login</button>
+            <zb-button type="submit" label="Join" styles="bg-green-500 text-green-100" :disabled="state.loader"/>
         </div>
     </form>
 </template>
@@ -18,28 +13,26 @@
 <script setup>
 import { reactive } from 'vue'
 import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
+import ZbAlert from '../../components/base/Alert.vue'
+import ZbFormInput from '../../components/base/FormInput.vue'
+import ZbButton from '../../components/base/Button.vue'
 
 const store = useStore()
-const state = {
+const router = useRouter()
+const state = reactive({
     email: "",
     password: "",
     loader: false,
     error: null
-}
+})
 
-const handleSignup = () => {
-    state.loader = true;
-    store.dispatch("session/signUp", { email: state.email, password: state.password }, { root: true })
-        .then( response => {
-            console.log(response)
-            alert("ok!")
-        })
-        .catch( err => {
-            state.error = err
-        })
-        .finally(()=>{
-            state.loader = false;
-        })
+const handleSignup = async () => {
+    state.loader = true, state.error = null
+    const { error } = await store.dispatch("session/signUp", { email: state.email, password: state.password }, { root: true })
+    if(error) state.error = error
+    else router.push({ name: 'home' })
+    state.loader = false, state.password = ""
 }
 
 
