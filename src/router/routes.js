@@ -26,6 +26,11 @@ const routes = [
         path: '/recover',
         component: () => import('../pages/auth/Recover.vue')
     },
+    {
+        name: 'recoverPwd',
+        path: '/recover/password',
+        component: () => import('../pages/auth/Password.vue')
+    }
 
 ]
 

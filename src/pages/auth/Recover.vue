@@ -1,5 +1,5 @@
 <template>
-    <form method="POST" action ="/login" @submit.prevent="handleRecovery">
+    <form method="POST" action ="/" @submit.prevent="handleRecovery">
         <div class="text-2xl py-4">Recover</div>
         <template v-if="state.sent">
             <zb-alert styles="bg-green-500 text-green-100" message="Instructions for recovering your account has been sent to your email address"/>
@@ -32,7 +32,7 @@ const handleRecovery = async () => {
     state.loader = true, state.error = null
     const { error } = await supabase.auth.api.resetPasswordForEmail(state.email)
     if(error) state.error = error
-    else sent = true
+    else state.sent = true
     state.loader = false;
 }
 

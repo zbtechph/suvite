@@ -15,6 +15,6 @@
 
   const store = useStore();
 
-  store.dispatch('session/appInit', null, { root: true })
+  store.dispatch('session/appInit', null)
 
 </script>
