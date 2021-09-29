@@ -11,7 +11,7 @@
                         <label>Password</label>
                         <router-link class="text-blue-500 hover:underline" :to="{ name: 'recover' }" tabindex="-1">Forgot?</router-link>
                     </div>
-                    <input type="password" v-model="state.password" @keydown="state.error=null" class="p-2 border border-gray-400 rounded  focus:outline-none focus:ring focus:ring-green-100 focus:border-green-300" required/>
+                    <input type="password" v-model="state.password" @keydown="state.error=null" class="p-2 border rounded border-gray-400 focus:outline-none focus:ring focus:ring-green-500 focus:ring-opacity-20 focus:border-green-300" required/>
                 </div>
                 <div class="mb-3">
                     <zb-button type="submit" label="Sign in" styles="bg-green-500 text-green-100 focus:outline-none focus:border-none" :disabled="state.loader"/>
